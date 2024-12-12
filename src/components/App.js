@@ -8,6 +8,7 @@ import Question from "./Question";
 import NextButton from "./NextButton";
 import Progress from "./Progress";
 import FinishScreen from "./FinishScreen";
+import data from "../data/questions.json";
 
 const Status = Object.freeze({
   LOADING: "loading",
@@ -29,11 +30,11 @@ const initialState = {
 function reducer(state, action) {
   switch (action.type) {
     case "dataReceived":
-      return { ...state, questions: action.payload, status: Status.READY };
+      return { ...state, questions: action.payload.questions, status: Status.READY };
 
-    case "dataFailed":
-      console.log("Error fetching data");
-      return { ...state, status: Status.ERROR };
+    // case "dataFailed":
+    //   console.log("Error fetching data");
+    //   return { ...state, status: Status.ERROR };
 
     case "start":
       return { ...state, status: Status.ACTIVE };
@@ -78,11 +79,16 @@ export default function App() {
   const numQuestions = questions.length;
   const maxPossiblePoints = questions.reduce((prev, cur) => prev + cur.points, 0);
 
-  useEffect(function () {
-    fetch("http://localhost:8000/questions")
-      .then((res) => res.json())
-      .then((data) => dispatch({ type: "dataReceived", payload: data }))
-      .catch((err) => dispatch({ type: "dataFailed" }));
+  // useEffect(function () {
+  //   fetch("http://localhost:8000/questions")
+  //     .then((res) => res.json())
+  //     .then((data) => dispatch({ type: "dataReceived", payload: data }))
+  //     .catch((err) => dispatch({ type: "dataFailed" }));
+  // }, []);
+
+  // Dispatching directly from the JSON file
+  useEffect(() => {
+    dispatch({ type: "dataReceived", payload: data });
   }, []);
 
   return (
